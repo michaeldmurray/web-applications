@@ -109,8 +109,8 @@
                 });
             }
             else {
-                //TODO:: REPLACE [chicagoStartups.reverse()] WITH A FUNCTION CALLED "chicagoStartupsReverse"
-                chicagoStartups.reverse().forEach( function(startup) {
+                //COMPLETE: REPLACE [chicagoStartups.reverse()] WITH A FUNCTION CALLED "chicagoStartupsReverse"
+                chicagoStartupsReverse().forEach( function(startup) {
                     var childDiv = document.createElement('div');
                     var text = document.createTextNode(startup);
                     childDiv.appendChild(text);
@@ -122,8 +122,11 @@
 
     function chicagoStartupsReverse() {
         var reversedStartups = [];
+        chicagoStartups.forEach( function(startup) {
+            reversedStartups.unshift(startup);
+        });
         /*
-            TODO: REVERSE THE CONTENTS OF THE ARRAY WITHOUT USING THE BUILT IN REVERSE METHOD
+            COMPLETE: REVERSE THE CONTENTS OF THE ARRAY WITHOUT USING THE BUILT IN REVERSE METHOD
                   RETURN THE REVERSED ARRAY
 
             TIPS: 
@@ -138,8 +141,16 @@
 
     function cleanAndCountCharacters() {
         console.log('CLEAN AND COUNT CHARACTERS');
+        if (!flags.charactersClean) {
+            chicagoStartups = chicagoStartups.map( startup => {
+                startup = startup.replace(/^\s+|\s+$/g, '').replace(/[^a-zA-Z ]/g, "");
+                return startup.concat(startup.length);
+            });
+            flags.charactersClean = true;
+            run();
+        }
         /*
-            TODO: REMOVES ANY SPECIAL CHARACTERS FROM EACH COMPANY NAME AND
+            COMPLETE: REMOVES ANY SPECIAL CHARACTERS FROM EACH COMPANY NAME AND
               DISPLAYS THE NUMBER OF REMAINING CHARACTERS NEXT TO THE FULL WORD.
               DONT FORGET TO REMOVE LEADING AND TRAILING WHITESPACES AS WELL
         */
@@ -183,10 +194,11 @@
     run();
     
     var flags = {
-        displayInstructions: true
+        displayInstructions: true,
+        charactersClean: false
     };
 
-    //TODO INVOKE THIS ANONYMOUS FUNCTION TO DISPLAY HOMEWORK INSTRUCTIONS IN THE CONSOLE
+    //COMPLETED: INVOKE THIS ANONYMOUS FUNCTION TO DISPLAY HOMEWORK INSTRUCTIONS IN THE CONSOLE
     (function() {
         if (flags.displayInstructions) {
             console.log(`
@@ -222,6 +234,6 @@
                         `);
         }
         
-    });
+    })();
 
 </script>
