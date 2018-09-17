@@ -4,6 +4,9 @@
     <button onclick="cleanAndCountCharacters()">
         clean and count words
     </button>
+    <button onclick="toggleDisplay()">
+        toggle display
+    </button>
     <body>
     </body>
 </html>
@@ -11,38 +14,21 @@
 <style>
     #rootContainer {
         display: flex;
-
-    }
-    .root-container {
-        position: relative;
+        margin-top: 5px;
     }
 
-    .root-container .header {
-        position: relative;
+    #rootContainer > div {
+        background-color: lightgray;
+        padding: 5px;
     }
 
-    .root-container .main {
-        position: relative;
+    #rootContainer.toggled {
+        display: block;
     }
 
-    .root-container .footer {
-        position: relative;
-    }
-
-    .startups-container {
-        background-color: gray;
-    }
-
-    .red {
-        background-image: red;
-    }
-
-    .blue {
-        background-image: blue;
-    }
-
-    .gold {
-        background-image: gold;
+    #rootContainer.toggled .list-item {
+        display: inline-block;
+        margin-right: 10px;
     }
 </style>
 
@@ -81,8 +67,10 @@
         var rootDiv = document.createElement('div');
         rootDiv.id = 'rootContainer';
         var companyNamesContainer = document.createElement('div');
+        companyNamesContainer.id = 'originalContainer';
         chicagoStartups.forEach( function(chicagoStartup, index) {
             var childDiv = document.createElement('div');
+            childDiv.classList.add('list-item');
             var text = document.createTextNode(index.toString().concat(' .) ').concat(chicagoStartup));
             childDiv.appendChild(text);
             companyNamesContainer.appendChild(childDiv);
@@ -103,6 +91,7 @@
                 reversedChicagoStartups.forEach(function(chicagoStartup, index) {
                     console.log(chicagoStartup);
                     var childDiv = document.createElement('div');
+                    childDiv.classList.add('list-item');
                     var text = document.createTextNode(chicagoStartup);
                     childDiv.appendChild(text);
                     reverseContainer.appendChild(childDiv);
@@ -112,6 +101,7 @@
                 //COMPLETE: REPLACE [chicagoStartups.reverse()] WITH A FUNCTION CALLED "chicagoStartupsReverse"
                 chicagoStartupsReverse().forEach( function(startup) {
                     var childDiv = document.createElement('div');
+                    childDiv.classList.add('list-item');
                     var text = document.createTextNode(startup);
                     childDiv.appendChild(text);
                     reverseContainer.appendChild(childDiv);
@@ -121,7 +111,7 @@
     }
 
     function chicagoStartupsReverse() {
-        var reversedStartups = [];
+        let reversedStartups = [];
         chicagoStartups.forEach( function(startup) {
             reversedStartups.unshift(startup);
         });
@@ -141,20 +131,26 @@
 
     function cleanAndCountCharacters() {
         console.log('CLEAN AND COUNT CHARACTERS');
-        if (!flags.charactersClean) {
-            chicagoStartups = chicagoStartups.map( startup => {
-                startup = startup.replace(/^\s+|\s+$/g, '').replace(/[^a-zA-Z ]/g, "");
-                return startup.concat(startup.length);
-            });
-            flags.charactersClean = true;
-            run();
-        }
+
         /*
             COMPLETE: REMOVES ANY SPECIAL CHARACTERS FROM EACH COMPANY NAME AND
               DISPLAYS THE NUMBER OF REMAINING CHARACTERS NEXT TO THE FULL WORD.
               DONT FORGET TO REMOVE LEADING AND TRAILING WHITESPACES AS WELL
         */
-
+        var cleanContainer = document.getElementById('cleanContainer');
+        if (!cleanContainer.hasChildNodes()) {
+            let cleanedStartups = chicagoStartups.map( startup => {
+                let cleanedStartup = startup.replace(/[^a-zA-Z ]/g, "").replace(/^\s+|\s+$/g, '');
+                return cleanedStartup.concat(": " + cleanedStartup.length);
+            });
+            cleanedStartups.forEach( function(startup) {
+                let childDiv = document.createElement('div');
+                childDiv.classList.add('list-item');
+                let text = document.createTextNode(startup);
+                childDiv.appendChild(text);
+                cleanContainer.appendChild(childDiv);
+            });
+        }
     }
     
     function initReverse() {
@@ -165,14 +161,21 @@
         reverseBtn.onclick = renderReversedElements;
         reverseBtn.appendChild(btnText);
         var reverseButtonContainer = document.createElement('div');
+        reverseButtonContainer.id = 'reverseButtonContainer';
         reverseButtonContainer.appendChild(reverseBtn);    
         document.getElementById('rootContainer').appendChild(reverseButtonContainer);
         document.getElementById('rootContainer').appendChild(reverseContainer);
     }
 
+    function initClean() {
+        var cleanContainer = document.createElement('div');
+        cleanContainer.id = 'cleanContainer';
+        document.getElementById('rootContainer').appendChild(cleanContainer);
+    }
+
     function toggleDisplay() {
         /*
-        TODO: REVIEW THE CODE IN THE PROVIDED REVERSE EXAMPLE, USE JAVASCRIPT TO ADD A CLICKABLE BUTTON 
+        COMPLETE: REVIEW THE CODE IN THE PROVIDED REVERSE EXAMPLE, USE JAVASCRIPT TO ADD A CLICKABLE BUTTON 
         CALLED "Toggle Display" ... WHEN THE USER CLICKS THE BUTTON, IT RENDERS THE DISPLAY OF THE COMPANY NAMES 
         FROM VERTICAL, TO HORIZONTAL.
         IF THE USER CLICKS THE TOGGLE BUTTON AGAIN THE NAMES SHOULD ONCE AGAIN BE DISPLAYED VERTICALLY.
@@ -185,17 +188,24 @@
 
             3.  
         */
+        if (!flags.displayToggled) {
+            document.getElementById('rootContainer').classList.add('toggled');
+        } else {
+            document.getElementById('rootContainer').classList.remove('toggled');
+        }
+        flags.displayToggled = !flags.displayToggled;
     }
     
     function run() {
         initDocument();
+        initClean();
         initReverse();
     }
     run();
     
     var flags = {
         displayInstructions: true,
-        charactersClean: false
+        displayToggled: false
     };
 
     //COMPLETED: INVOKE THIS ANONYMOUS FUNCTION TO DISPLAY HOMEWORK INSTRUCTIONS IN THE CONSOLE
