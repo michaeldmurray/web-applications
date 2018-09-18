@@ -137,19 +137,42 @@
               DISPLAYS THE NUMBER OF REMAINING CHARACTERS NEXT TO THE FULL WORD.
               DONT FORGET TO REMOVE LEADING AND TRAILING WHITESPACES AS WELL
         */
+
+        let cleanedStartups = chicagoStartups.map( startup => {
+                return startup.replace(/[^a-zA-Z ]/g, "").replace(/^\s+|\s+$/g, '');
+            });
+
         var cleanContainer = document.getElementById('cleanContainer');
         if (!cleanContainer.hasChildNodes()) {
-            let cleanedStartups = chicagoStartups.map( startup => {
-                let cleanedStartup = startup.replace(/[^a-zA-Z ]/g, "").replace(/^\s+|\s+$/g, '');
-                return cleanedStartup.concat(": " + cleanedStartup.length);
-            });
             cleanedStartups.forEach( function(startup) {
                 let childDiv = document.createElement('div');
                 childDiv.classList.add('list-item');
-                let text = document.createTextNode(startup);
+                let text = document.createTextNode(startup + ": " + startup.length);
                 childDiv.appendChild(text);
                 cleanContainer.appendChild(childDiv);
             });
+        }
+        
+        var charContainer = document.getElementById('charContainer');
+        if (!charContainer.hasChildNodes()) {
+            let charCounts = new Map();
+            cleanedStartups.forEach(function(clean) {
+                [...clean].forEach(function(character) {
+                    if (charCounts.has(character)) {
+                        charCounts.set(character,charCounts.get(character) + 1);
+                    } else {
+                        charCounts.set(character,1);
+                    }
+                })
+            })
+            
+            Array.from(charCounts.keys()).sort().forEach(function(key) {
+                let childDiv = document.createElement('div');
+                childDiv.classList.add('list-item');
+                let text = document.createTextNode(key + ": " + charCounts.get(key));
+                childDiv.appendChild(text);
+                charContainer.appendChild(childDiv);
+            })
         }
     }
     
@@ -171,6 +194,10 @@
         var cleanContainer = document.createElement('div');
         cleanContainer.id = 'cleanContainer';
         document.getElementById('rootContainer').appendChild(cleanContainer);
+
+        var charContainer = document.createElement('div');
+        charContainer.id = 'charContainer';
+        document.getElementById('rootContainer').appendChild(charContainer);
     }
 
     function toggleDisplay() {
